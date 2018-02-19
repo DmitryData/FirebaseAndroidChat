@@ -1,5 +1,6 @@
 package com.firebase_info.firebaseandroidchat;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -56,10 +57,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setTitle("SLyne" );
         mMessageListView = (ListView) findViewById(R.id.messageListView);
         mEditText = (EditText) findViewById(R.id.messageEditText);
         mSendButton = (Button) findViewById(R.id.sendButton);
 
+        if (Main2Activity.name == null) {
+            Intent intent1 = new Intent(this, Main2Activity.class);
+            startActivity(intent1);
+        }
         mFirewbaseDatabase = FirebaseDatabase.getInstance();
         mMessageDatabaseReference = mFirewbaseDatabase.getReference().child("Messages");
 
@@ -102,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             mSendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Message message = new Message(mEditText.getText().toString());
+                    Message message = new Message(Main2Activity.name + " |  " +mEditText.getText().toString());
                     mMessageDatabaseReference.push().setValue(message);
                     mEditText.setText("");
                  }
@@ -111,11 +117,7 @@ public class MainActivity extends AppCompatActivity {
             mEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if(charSequence.toString().trim().length()>0){
-                        mSendButton.setEnabled(true);
-                    }else{
-                        mSendButton.setEnabled(false);
-                    }
+
                 }
 
                 @Override
