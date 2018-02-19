@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +30,26 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase mFirewbaseDatabase;
     private DatabaseReference mMessageDatabaseReference;
     private ChildEventListener mChildEventListener;
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+            menu.findItem(R.id.menu_refresh).setVisible(true);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_refresh:
+                mMessageDatabaseReference.removeValue();
+                mMessageAdapter.clear();
+                mMessageAdapter.notifyDataSetChanged();
+                break;
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +105,6 @@ public class MainActivity extends AppCompatActivity {
                     Message message = new Message(mEditText.getText().toString());
                     mMessageDatabaseReference.push().setValue(message);
                     mEditText.setText("");
-
-
-
                  }
             });
 
