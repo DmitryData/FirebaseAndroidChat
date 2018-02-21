@@ -22,28 +22,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    // 1. Пользовательский интерфейс (UI)
     private ListView mMessageListView;
     private EditText mEditText;
     private Button mSendButton;
     private MessageAdapter mMessageAdapter;
-
+    // 2. Firebase
     private FirebaseDatabase mFirewbaseDatabase;
     private DatabaseReference mMessageDatabaseReference;
     private ChildEventListener mChildEventListener;
 
-
+    //создаем меню для кнопки в шапке
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
             menu.findItem(R.id.menu_refresh).setVisible(true);
         return true;
     }
-
+    //listener для кнопки в шапке
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
+                //удаляем всю информацию с сервера и очищаем адаптер
                 mMessageDatabaseReference.removeValue();
                 mMessageAdapter.clear();
                 mMessageAdapter.notifyDataSetChanged();
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // 3. Связываем UI
         setTitle("SLyne" );
         mMessageListView = (ListView) findViewById(R.id.messageListView);
         mEditText = (EditText) findViewById(R.id.messageEditText);
@@ -66,9 +67,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent1 = new Intent(this, Main2Activity.class);
             startActivity(intent1);
         }
+        // 4. Инициализируем Firebase
         mFirewbaseDatabase = FirebaseDatabase.getInstance();
         mMessageDatabaseReference = mFirewbaseDatabase.getReference().child("Messages");
-
+        // 5. Создаем слушатель базы данных
         if (mChildEventListener == null){
             mChildEventListener = new ChildEventListener() {
                 @Override
@@ -97,14 +99,14 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             };
-
+            // 6. Устанавливаем слушатель базы данных
             mMessageDatabaseReference.addChildEventListener(mChildEventListener);
-
+            // 7. Создаем лист где будем хранить сообщения
             List<Message> messages = new ArrayList<>();
-
+            // 8. Создаем и устанавливаем Адаптер для сообщений
             mMessageAdapter = new MessageAdapter(this,R.layout.item_message,messages);
             mMessageListView.setAdapter(mMessageAdapter);
-
+            // 9. Устанавливаем слушатель клика на кнопку, создаем сообщение, отправляем сообщение в базу, удаляем текст
             mSendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                     mEditText.setText("");
                  }
             });
-
+            // * устанавливаем слушатель, который срабатывает при вводе текста
             mEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
+    // 10. Удаляем слушатель базы данных, в целях избежания утечки памяти
     @Override
     protected void onDestroy() {
         if(mChildEventListener != null){

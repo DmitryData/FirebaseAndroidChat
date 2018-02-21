@@ -5,9 +5,9 @@ android {
     defaultConfig {
         applicationId "com.firebase_info.firebaseandroidchat"
         minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 25
+        versionCode 5
+        versionName "5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
